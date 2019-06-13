@@ -109,7 +109,23 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.reloadData()
         messagesCollectionView.scrollToBottom()
     }
-
+    // アラートを出す関数を定義 クロージャでBool値を返す
+    func showAlert(message: String, handler: ((Bool) -> Void)?) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let yesAction: UIAlertAction = UIAlertAction(title: "OK", style: .default){ action in
+            if let handler = handler {
+                handler(true) // OKを選択したらクロージャでtrueを返す
+            }
+        }
+        let noAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: .cancel){ action in
+            if let handler = handler {
+                handler(false) // キャンセルを選択したらクロージャでfalseを返す
+            }
+        }
+        alert.addAction(yesAction)
+        alert.addAction(noAction)
+        present(alert, animated: true, completion: nil)
+    }
 
 
 
@@ -226,12 +242,13 @@ extension ChatViewController: MessageCellDelegate {
                 self.messagesCollectionView.reloadData()
             } else {
                 //キャンセルであれば何もしない
-            
+            }
+        })
     }
-        
-    }
+}
+
     
-        extension ChatViewController: InputBarAccessoryViewDelegate {
+extension ChatViewController: InputBarAccessoryViewDelegate {
     // メッセージ送信ボタンを押されたとき
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         sendMessageToFirebase(text: text)
@@ -241,10 +258,10 @@ extension ChatViewController: MessageCellDelegate {
         
     }
 
-            })
-
-
 }
 
 
-}
+
+
+
+
